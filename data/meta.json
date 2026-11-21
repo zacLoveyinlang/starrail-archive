@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "title": "星穹全典",
+  "subtitle": "崩坏：星穹铁道 · 角色与剧情档案",
+  "generatedAt": "2026-11-21T19:03:43+08:00",
+  "counts": {
+    "characters": 103,
+    "officialPlatformCharacters": 94,
+    "communityOnlyCharacters": 9,
+    "stories": 581,
+    "storyLines": 89609,
+    "skills": 1940,
+    "voices": 21709,
+    "artworks": 436
+  },
+  "sources": [
+    {
+      "name": "米游社·开拓者笔记",
+      "url": "https://bbs.mihoyo.com/sr/wiki/",
+      "role": "角色基础资料、技能、数值、官方语音与画廊",
+      "license": "内容权利归米哈游及相关权利人；本项目仅做检索与展示"
+    },
+    {
+      "name": "哔哩哔哩 BWIKI",
+      "url": "https://wiki.biligame.com/sr/",
+      "role": "社区共建的角色补全、剧情任务正文与立绘文件索引",
+      "license": "社区内容遵循站点标注；转载与再利用前请核对原页面"
+    }
+  ],
+  "notice": "非官方资料库。数据按原站公开页面整理，角色与剧情版权归米哈游及原权利人所有。"
+}
