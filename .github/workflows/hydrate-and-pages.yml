@@ -1,0 +1,59 @@
+name: Hydrate archive and deploy Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  hydrate:
+    if: ${{ !hashFiles('data/meta.json') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download the prepared archive bundle
+        run: |
+          curl -fL -A 'Mozilla/5.0' 'https://aka.doubaocdn.com/s/1UVFpdBfAU' -o /tmp/starrail-archive.zip
+          unzip -q /tmp/starrail-archive.zip -d /tmp/archive
+          rsync -a --exclude='.git' --exclude='.github' /tmp/archive/ ./ 
+      - name: Commit generated archive data
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'Archive already hydrated.'
+          else
+            git commit -m 'chore: add complete archive data [skip ci]'
+            git push
+          fi
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Assemble static site
+        run: |
+          mkdir -p _site
+          rsync -a --exclude='.git' --exclude='.github' --exclude='tools' --exclude='.work' ./ _site/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: hydrate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
