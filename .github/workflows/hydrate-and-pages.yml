@@ -16,15 +16,18 @@ concurrency:
 
 jobs:
   hydrate:
-    if: ${{ !hashFiles('data/meta.json') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Download the prepared archive bundle
         run: |
+          if [ -f data/meta.json ]; then
+            echo 'Archive already hydrated; keeping repository contents.'
+            exit 0
+          fi
           curl -fL -A 'Mozilla/5.0' 'https://aka.doubaocdn.com/s/1UVFpdBfAU' -o /tmp/starrail-archive.zip
           unzip -q /tmp/starrail-archive.zip -d /tmp/archive
-          rsync -a --exclude='.git' --exclude='.github' /tmp/archive/ ./ 
+          rsync -a --exclude='.git' --exclude='.github' /tmp/archive/ ./
       - name: Commit generated archive data
         run: |
           git config user.name 'github-actions[bot]'
